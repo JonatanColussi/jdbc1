@@ -63,7 +63,7 @@ public class UsuarioController extends HttpServlet {
 			if(resultado == true){
 				saida.print("cadastrado com sucesso");
 			}else{
-				saida.print("falaha no cadastro");
+				saida.print("falha no cadastro");
 			}
 		}else{
 			resultado = usuDAO.editar(usu);

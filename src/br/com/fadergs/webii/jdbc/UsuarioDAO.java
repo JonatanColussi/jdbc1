@@ -36,7 +36,7 @@ public class UsuarioDAO {
 	}
 	
 	public boolean editar (Usuario usuario) {
-		String sql = "UPDATE USUARIO SET nome = ?, login = ?, senha = ? where id=?";
+		String sql = "UPDATE usuario SET nome = ?, login = ?, senha = ? where id=?";
 		boolean retorno = false;
 
 		try {
@@ -56,8 +56,8 @@ public class UsuarioDAO {
 		return retorno;
 	}
 	
-	public void boolean (Usuario usuario) {
-		String sql = "DELETE from USUARIO where id=?";
+	public boolean remover (Usuario usuario) {
+		String sql = "DELETE FROM usuario WHERE id=?";
 		boolean retorno = false;
 
 		try {
@@ -76,7 +76,7 @@ public class UsuarioDAO {
 	}
 	
 	public ArrayList<Usuario> buscarTodos () {
-		String sql = "Select * from usuario";
+		String sql = "SELECT * FROM usuario";
 		ArrayList<Usuario> usuariosLista = new ArrayList<Usuario>();
 
 		try {
@@ -102,11 +102,62 @@ public class UsuarioDAO {
 	}
 	
 	public Usuario buscarUsuarioPorId (Integer id) {
-		String sql = "Select * from usuario where id = ?";
+		String sql = "SELECT * FROM usuario WHERE id = ?";
 		Usuario usuario = new Usuario();
 		try {
 			PreparedStatement preparador = con.prepareStatement(sql);
 			preparador.setInt(1, id);
+			ResultSet result = preparador.executeQuery();
+			
+			while (result.next()) {
+				usuario.setId(result.getInt(1));
+				usuario.setNome(result.getString(2));
+				usuario.setLogin(result.getString(3));
+				usuario.setSenha(result.getString(4));
+			}
+
+			preparador.close();
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+			
+		}
+
+		return usuario;
+	}
+
+	public Usuario buscarUsuarioPorNome (String nome) {
+		String sql = "SELECT * FROM usuario WHERE nome LIKE '%?%'";
+		Usuario usuario = new Usuario();
+		try {
+			PreparedStatement preparador = con.prepareStatement(sql);
+			preparador.setString(1, nome);
+			ResultSet result = preparador.executeQuery();
+			
+			while (result.next()) {
+				usuario.setId(result.getInt(1));
+				usuario.setNome(result.getString(2));
+				usuario.setLogin(result.getString(3));
+				usuario.setSenha(result.getString(4));
+			}
+
+			preparador.close();
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+			
+		}
+
+		return usuario;
+	}
+
+	public Usuario buscarUsuarioPorLoginEId (String login, Integer id) {
+		String sql = "SELECT * FROM usuario WHERE login LIKE '%?%' AND id = ?";
+		Usuario usuario = new Usuario();
+		try {
+			PreparedStatement preparador = con.prepareStatement(sql);
+			preparador.setString(1, login);
+			preparador.setInt(2, id);
 			ResultSet result = preparador.executeQuery();
 			
 			while (result.next()) {
