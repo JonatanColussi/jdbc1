@@ -13,34 +13,32 @@ public class UsuarioDAO {
 
 	private Connection con = Conexao.getConnection();
 	
-	public void cadastrar (Usuario usuario) {
+	public boolean cadastrar (Usuario usuario) {
 		
 		String sql = "INSERT INTO usuario (nome, login, senha) VALUES (?, ?, ?)";
-		
+		boolean retorno = false;
 		try {
 			PreparedStatement preparador = con.prepareStatement(sql);
 			preparador.setString(1, usuario.getNome());
 			preparador.setString(2, usuario.getLogin());
 			preparador.setString(3, usuario.getSenha());
 			
-			
 			preparador.execute();
 			preparador.close();
 			
-			System.out.println("Cadastrado com sucesso!");
-			
+			retorno = true;
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
 			
 		}
-		
+
+		return retorno;
 	}
 	
-	public void editar (Usuario usuario) {
-		
+	public boolean editar (Usuario usuario) {
 		String sql = "UPDATE USUARIO SET nome = ?, login = ?, senha = ? where id=?";
-		
+		boolean retorno = false;
+
 		try {
 			PreparedStatement preparador = con.prepareStatement(sql);
 			preparador.setString(1, usuario.getNome());
@@ -50,21 +48,18 @@ public class UsuarioDAO {
 			
 			preparador.execute();
 			preparador.close();
-			
-			System.out.println("Alterado com sucesso!");
-			
+			retorno = true;
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
 			
 		}
-		
+		return retorno;
 	}
 	
-	public void remover (Usuario usuario) {
-		
+	public void boolean (Usuario usuario) {
 		String sql = "DELETE from USUARIO where id=?";
-		
+		boolean retorno = false;
+
 		try {
 			PreparedStatement preparador = con.prepareStatement(sql);
 			preparador.setInt(1, usuario.getId());
@@ -72,50 +67,41 @@ public class UsuarioDAO {
 			preparador.execute();
 			preparador.close();
 			
-			System.out.println("Apagado com sucesso!");
-			
+			retorno = true;
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
-			
 		}
-		
+
+		return retorno;
 	}
 	
 	public ArrayList<Usuario> buscarTodos () {
-		
 		String sql = "Select * from usuario";
 		ArrayList<Usuario> usuariosLista = new ArrayList<Usuario>();
+
 		try {
 			Statement statement = con.createStatement();
 			ResultSet result = statement.executeQuery(sql);
 			
-			
 			while (result.next()) {
 				Usuario usu = new Usuario();
-			
+
 				usu.setId(result.getInt(1));
 				usu.setNome(result.getString(2));
 				usu.setLogin(result.getString(3));
 				usu.setSenha(result.getString(4));
 				usuariosLista.add(usu);
-				
 			}
+
 			statement.close();
-			
-			//System.out.println("Alterado com sucesso!");
-			
 		} catch (SQLException e) {
-			
 			e.printStackTrace();
-			
 		}
+
 		return usuariosLista;
-		
 	}
 	
-public Usuario buscarUsuarioPorId (Integer id) {
-		
+	public Usuario buscarUsuarioPorId (Integer id) {
 		String sql = "Select * from usuario where id = ?";
 		Usuario usuario = new Usuario();
 		try {
@@ -123,28 +109,20 @@ public Usuario buscarUsuarioPorId (Integer id) {
 			preparador.setInt(1, id);
 			ResultSet result = preparador.executeQuery();
 			
-			
 			while (result.next()) {
-				
-				
 				usuario.setId(result.getInt(1));
 				usuario.setNome(result.getString(2));
 				usuario.setLogin(result.getString(3));
 				usuario.setSenha(result.getString(4));
-				
-			
-				
 			}
+
 			preparador.close();
-			
-			//System.out.println("Alterado com sucesso!");
-			
 		} catch (SQLException e) {
 			
 			e.printStackTrace();
 			
 		}
+
 		return usuario;
-		
 	}
 }

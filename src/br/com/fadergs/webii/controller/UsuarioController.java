@@ -1,6 +1,8 @@
 package br.com.fadergs.webii.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,17 +39,40 @@ public class UsuarioController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Chamando método POST");
+		int id       = Integer.parseInt(request.getParameter("txtId"));
 		String nome  = request.getParameter("txtNome");
 		String login = request.getParameter("txtLogin");
 		String senha = request.getParameter("txtSenha");
 
 		Usuario usu = new Usuario();
+		usu.setId(id);
 		usu.setNome(nome);
 		usu.setLogin(login);
 		usu.setSenha(senha);
 		
 		UsuarioDAO usuDAO = new UsuarioDAO();
-		usuDAO.cadastrar(usu);
+
+		Usuario usuFind = usuDAO.buscarUsuarioPorId(id);
+
+		PrintWriter saida = response.getWriter();
+
+		boolean resultado = false;
+
+		if(usuFind.getId() == null){
+			resultado = usuDAO.cadastrar(usu);
+			if(resultado == true){
+				saida.print("cadastrado com sucesso");
+			}else{
+				saida.print("falaha no cadastro");
+			}
+		}else{
+			resultado = usuDAO.editar(usu);
+			if(resultado == true){
+				saida.print("alterado com sucesso");
+			}else{
+				saida.print("falha na alteração");
+			}
+		}
 	}
 
 }
